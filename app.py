@@ -14,25 +14,31 @@ from google import genai
 # PAGE CONFIG
 # ---------------------------------------------------------
 st.set_page_config(
-    page_title="Horticulture Crop Disease Advisory System",
+    page_title="Horticulture Disease Detection",
     page_icon="🌿",
     layout="centered"
 )
 
-st.title("🌿 AI-Based Horticulture Crop Disease Detection & Advisory System")
-st.caption("Deep Learning + Gemini AI + Live Weather Context")
+st.title("🌿 Horticulture Disease Detection")
+st.caption("AI-Based Crop Disease Detection & Advisory System — Deep Learning + Gemini AI + Live Weather Context")
+st.caption("Created by Debarchana")
 
 # ---------------------------------------------------------
 # SIDEBAR: API KEYS (entered by user, not hardcoded)
 # ---------------------------------------------------------
-st.sidebar.header("🔑 API Keys")
-gemini_api_key = st.sidebar.text_input("Gemini API Key", type="password")
-weather_api_key = st.sidebar.text_input("OpenWeatherMap API Key", type="password")
+import os
 
-st.sidebar.markdown("---")
-st.sidebar.info(
-    "Your keys are used only for this session and are never stored or sent anywhere else."
-)
+# ---------------------------------------------------------
+# API KEYS (securely loaded from environment variables set
+# on the hosting server — never visible in the code or to users)
+# ---------------------------------------------------------
+gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
+weather_api_key = os.environ.get("OPENWEATHER_API_KEY", "")
+
+if not gemini_api_key:
+    st.sidebar.warning("Gemini API key not configured on the server.")
+if not weather_api_key:
+    st.sidebar.info("Weather API key not configured — weather context will be skipped.")
 
 # ---------------------------------------------------------
 # LOAD MODEL AND CLASS NAMES (cached so it only loads once)
@@ -142,7 +148,7 @@ if analyze_clicked:
         st.warning("Please upload a leaf image first.")
         st.stop()
     if not gemini_api_key:
-        st.warning("Please enter your Gemini API key in the sidebar.")
+        st.error("The app is not fully configured. Please contact the site owner.")
         st.stop()
 
     img = Image.open(uploaded_file)
@@ -185,6 +191,7 @@ if analyze_clicked:
 
 st.markdown("---")
 st.caption(
-    "AI-Based Horticulture Crop Disease Detection and Advisory System — "
-    "Deep Learning + Gemini AI + Basic Environmental Context"
+    "Horticulture Disease Detection — AI-Based Crop Disease Detection and "
+    "Advisory System (Deep Learning + Gemini AI + Basic Environmental Context)"
 )
+st.caption("Created by Debarchana")
